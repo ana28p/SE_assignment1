@@ -9,6 +9,10 @@ list[str] extractVocabulary(Requirement reqs) {
   // Please notice that the result is a list instead of (the more logical) set. 
   // This is because we need a list of words when calculating the vectors.
   
-  // REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUN
-  return []; 
+	list[str] uniqueWords = [];
+	for (<id, words> <- reqs) {
+		uniqueWords += [w | w <- words, w notin uniqueWords];
+	}
+	  
+	return uniqueWords; 
 }
