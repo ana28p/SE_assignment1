@@ -17,7 +17,7 @@ Requirement readHighlevelRequirements(DataSet grp) {
 
 	Requirement result = {};
 
-  for (str req <- requirements, /^<id:UC[0-9]+>/ := trim(req)) {
+  for (str req <- requirements, /^<id:F[0-9]+>/ := trim(req)) {
     list[str] reqWords = [];
     
     for (str line <- split("\n", trim(req))) {
