@@ -8,16 +8,23 @@ import List;
 import steps::detection::RequirementsReader;
 
 Requirement removeStopWords(Requirement reqs) {
-  // TODO: Remove the stop words from the words lists of all the requirements.
-  
-  // REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUNNABLE
-  return reqs;
+	Requirement result = {};
+	
+	for (<id, words> <- reqs) {
+		list[str] baseWords = remover2(words);
+		result += {<id, baseWords>};
+		//for (w <- baseWords) {
+		//	println(w);
+	 //   }
+	}
+
+  	return result;
 }
 
 // TODO: Add extra functions if wanted / needed
 
 set[str] readStopwords() =
-	{word | /<word:[a-zA-Z\"]+>/ := readFile(|project://assignment1/data/stop-word-list.txt|)};
+	{word | /<word:[a-zA-Z\"]+>/ := readFile(|project://SE_assignment1/data/stop-word-list.txt|)};
 
 list[str] remover(list[str] args) {
   stopwords = readStopwords();
