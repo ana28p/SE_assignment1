@@ -7,11 +7,13 @@ import steps::detection::RequirementsReader;
 import IO;
 
 Requirement stemWords(Requirement reqs) {
-  // TODO: Stem the word list of the requirement. 
-  // You can stem a list of words using the given method 'stemAll'.
+  Requirement result = {};
   
-  // REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUNNABLE
-  return reqs;
+  for (<id, words> <- reqs) {
+  		list[str] baseWords = stemAll(words);
+		result += {<id, baseWords>};
+	}
+  return result;
 }
 
 // TODO: Add extra functions if wanted / needed
