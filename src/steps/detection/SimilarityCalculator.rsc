@@ -14,8 +14,14 @@ SimilarityMatrix calculateSimilarityMatrix(Requirement highlevel, Requirement lo
 	// TODO: Calculate the similarity matrix of the high- and lowlevel requirements using the passed in vectors
 	// You can use the given function 'cos(list[real] high, list[real] low)' to calculate the similarity score of two requirements
 
-  // REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUNNABLE
-  return {};
+	SimilarityMatrix result = {};
+	
+	for (<Hid, Hwords> <- highlevel) {
+		for (<Lid, Lwords> <- lowlevel) {
+			result += <Hid, Lid, cos(getOneFrom(vec[Hid]), getOneFrom(vec[Lid]))>;
+		}
+	}
+	return result;
 }
 
 // TODO: Add extra functions if wanted / needed
