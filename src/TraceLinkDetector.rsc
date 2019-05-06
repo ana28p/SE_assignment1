@@ -35,7 +35,7 @@ void gatherLinks(DataSet grp) {
 	list[str] vocabulary = extractVocabulary(highlevel + lowlevel);
 	
 	println("(5/7) Calculating vectors");
-	Vector vectors = calculateVector(highlevel + lowlevel, vocabulary);
+	Vector vectors = calculateVector(highlevel + lowlevel, vocabulary, wordWeight);
 
 	println("(6/7) Calculating similarity matrix");
 	SimilarityMatrix sm = calculateSimilarityMatrix(highlevel, lowlevel, vectors);

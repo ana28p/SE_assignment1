@@ -8,10 +8,12 @@ import IO;
 import Set;
 
 alias Vector = rel[str name, list[real] freq];
+boolean useEnglishFrequencyWeights = true;
 
-Vector calculateVector(Requirement reqs, list[str] vocabulary) {
+Vector calculateVector(Requirement reqs, list[str] vocabulary, WordWeight wordWeight) {
 	Vector result = {};
 	number_req = size(reqs);
+	maxWordWeight = getMaxWordWeight(wordWeight);
 	
 	for (<id, words> <- reqs) {
 		dis = distribution(words);
@@ -19,13 +21,22 @@ Vector calculateVector(Requirement reqs, list[str] vocabulary) {
 		for (str w <- vocabulary) {
 			int tf = w in dis ? dis[w] : 0;
 			real idf = log2(number_req / word_in_req(reqs, w));
-			freq_list += tf * idf;
+			if (useEnglishFrequencyWeights) {
+				weight = w in wordWeight ? wordWeight[w] : maxWordWeight;
+				freq_list += tf * idf * weight;
+			}
+			else {
+				freq_list += tf * idf;
+			}
 		}
 		result += <id, freq_list>;
 	}
 	return result;
 }
 
+real getMaxWordWeight(WordWeight wordWeight) {
+	return (0 | max(it, wordWeight[w]) | w <- wordWeight);
+}
 
 int word_in_req(Requirement reqs, str contain_word) {
 	count = 0;
