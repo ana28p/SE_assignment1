@@ -8,6 +8,7 @@ import steps::detection::VocabularyBuilder;
 import steps::detection::Vectorizer;
 import steps::detection::SimilarityCalculator;
 import steps::detection::TraceLinkConstructor;
+import steps::detection::EnglishWordFrequency;
 
 import IO;
 import ValueIO;
@@ -17,6 +18,10 @@ void gatherLinksGroup1() = gatherLinks(group1());
 void gatherLinksGroup9() = gatherLinks(group9());
 
 void gatherLinks(DataSet grp) {
+	println("(0) Reading and calculating english word weight");
+	WordFreq wordFreqs = readWordFrequency();
+	WordWeight wordWeight = calculateWordWeight(wordFreqs);
+
 	println("(1/7) Reading highlevel requirements");
 	Requirement highlevel = readHighlevelRequirements(grp);
 	println("(2/7) Reading lowlevel requirements");
