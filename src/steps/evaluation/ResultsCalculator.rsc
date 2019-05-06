@@ -11,11 +11,11 @@ alias ConfusionMatrix = tuple[int truePositives, int falsePositives, int trueNeg
 alias EvaluationResult = tuple[ConfusionMatrix cm, real precision, real recall, real fMeasure];
 
 EvaluationResult evaluateMethod(TraceLink manual, TraceLink fromMethod, Requirement highlevel, Requirement lowlevel) {
-	cm = calculateConfusionMatrix(manual, fromMethod, highlevel, lowlevel);
+	ConfusionMatrix cm = calculateConfusionMatrix(manual, fromMethod, highlevel, lowlevel);
 	println("Here");
-	precision = calculatePrecision(cm);
-	recall = calculateRecall(cm);
-	fmeasure = calculateFMeasure(precision, recall);
+	real precision = calculatePrecision(cm);
+	real recall = calculateRecall(cm);
+	real fmeasure = calculateFMeasure(precision, recall);
 	EvaluationResult res = <cm, precision, recall, fmeasure>;
 	return res;
 }
@@ -38,7 +38,10 @@ private ConfusionMatrix calculateConfusionMatrix(TraceLink manual, TraceLink aut
   	// False positives: Nr of trace-link predicted by the tool BUT NOT identified manually
   	// True negatives: Nr of trace-link NOT predicted by the tool AND NOT identified manually
   	// False negatives: Nr of trace-link NOT predicted by the tool BUT identified manually
-	<tp, fp, tn, fn> = <0, 0, 0, 0>;
+	int tp = 0;
+	int fp = 0;
+	int tn = 0;
+	int fn = 0;
 	for (<lid, lwords> <- lowlevel) {
 		for (<hid, hwords> <- highlevel) {
 			if (<hid, lid> in manual) {
@@ -59,6 +62,6 @@ private ConfusionMatrix calculateConfusionMatrix(TraceLink manual, TraceLink aut
 			}
 		}
 	}
-	ConfusionMatrix cm = <tp,fp,tn,fn>
+	ConfusionMatrix cm = <tp,fp,tn,fn>;
 	return cm;
 }
