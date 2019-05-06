@@ -1,6 +1,7 @@
 module steps::detection::Vectorizer
 
 import steps::detection::RequirementsReader;
+import steps::detection::EnglishWordFrequency;
 
 import List;
 import util::Math;
@@ -8,12 +9,13 @@ import IO;
 import Set;
 
 alias Vector = rel[str name, list[real] freq];
-boolean useEnglishFrequencyWeights = true;
+bool useEnglishFrequencyWeights = false;
 
 Vector calculateVector(Requirement reqs, list[str] vocabulary, WordWeight wordWeight) {
 	Vector result = {};
 	number_req = size(reqs);
 	maxWordWeight = getMaxWordWeight(wordWeight);
+	println(maxWordWeight);
 	
 	for (<id, words> <- reqs) {
 		dis = distribution(words);
@@ -22,7 +24,7 @@ Vector calculateVector(Requirement reqs, list[str] vocabulary, WordWeight wordWe
 			int tf = w in dis ? dis[w] : 0;
 			real idf = log2(number_req / word_in_req(reqs, w));
 			if (useEnglishFrequencyWeights) {
-				weight = w in wordWeight ? wordWeight[w] : maxWordWeight;
+				real weight = w in wordWeight ? wordWeight[w] : maxWordWeight;
 				freq_list += tf * idf * weight;
 			}
 			else {
@@ -35,7 +37,7 @@ Vector calculateVector(Requirement reqs, list[str] vocabulary, WordWeight wordWe
 }
 
 real getMaxWordWeight(WordWeight wordWeight) {
-	return (0 | max(it, wordWeight[w]) | w <- wordWeight);
+	return (0.0 | max(it, wordWeight[w]) | w <- wordWeight);
 }
 
 int word_in_req(Requirement reqs, str contain_word) {

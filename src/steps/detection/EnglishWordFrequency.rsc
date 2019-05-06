@@ -12,7 +12,7 @@ import DataSet;
 alias WordFreq = map[str,int];
 alias WordWeight = map[str,real];
 real minWeight = 1.;
-real maxWeight = 10.;
+real maxWeight = 5.;
 
 WordFreq readWordFrequency() {
 	list[str] words = split("\n",readFile(|project://SE_assignment1/data/English-Word-Frequency.txt|));
@@ -68,7 +68,6 @@ WordWeight calculateWordWeight(WordFreq orig) {
 		//result += (w: exp(a * orig[w] + b));
 		result += (w: 1.0 / (a * orig[w] + b));
 	}
-	println(result);
 	return result;
 }
 
