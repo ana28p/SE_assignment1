@@ -11,40 +11,54 @@ alias ConfusionMatrix = tuple[int truePositives, int falsePositives, int trueNeg
 alias EvaluationResult = tuple[ConfusionMatrix cm, real precision, real recall, real fMeasure];
 
 EvaluationResult evaluateMethod(TraceLink manual, TraceLink fromMethod, Requirement highlevel, Requirement lowlevel) {
-	// TODO: Evaluate the different methods by calculating the confuction matrix and recall and precision for each one.
-	
-	// REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUNNABLE
-	return <<0,0,0,0>,0.,0.,0.>;
+	cm = calculateConfusionMatrix(manual, fromMethod, highlevel, lowlevel);
+	println("Here");
+	precision = calculatePrecision(cm);
+	recall = calculateRecall(cm);
+	fmeasure = calculateFMeasure(precision, recall);
+	EvaluationResult res = <cm, precision, recall, fmeasure>;
+	return res;
 }
 
 private real calculatePrecision(ConfusionMatrix cm) {
-  // TODO
-
-  // REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUNNABLE
-  return 0.;
+	return 1.0 * cm.truePositives / (cm.truePositives + cm.falsePositives);
 }
 
 private real calculateRecall(ConfusionMatrix cm) { 
-  // TODO
-  
-  // REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUNNABLE
-  return 0.;
+	return 1.0 * cm.truePositives / (cm.truePositives + cm.falseNegatives);
 }
 
 private real calculateFMeasure(real precision, real recall) {
-  // TODO
-  
-  // REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUNNABLE
-  return 0.;
+	return 2.0 * precision * recall / (precision + recall); 
 }
 
 private ConfusionMatrix calculateConfusionMatrix(TraceLink manual, TraceLink automatic, Requirement highlevel, Requirement lowlevel) {
 	// TODO: Construct the confusion matrix.
 	// True positives: Nr of trace-link predicted by the tool AND identified manually  
-  // False positives: Nr of trace-link predicted by the tool BUT NOT identified manually
-  // True negatives: Nr of trace-link NOT predicted by the tool AND NOT identified manually
-  // False negatives: Nr of trace-link NOT predicted by the tool BUT identified manually
-
-  // REMOVE BELOW LINE, ONLY HERE TO MAKE THE TEMPLATES RUNNABLE
-	return <0,0,0,0>;
+  	// False positives: Nr of trace-link predicted by the tool BUT NOT identified manually
+  	// True negatives: Nr of trace-link NOT predicted by the tool AND NOT identified manually
+  	// False negatives: Nr of trace-link NOT predicted by the tool BUT identified manually
+	<tp, fp, tn, fn> = <0, 0, 0, 0>;
+	for (<lid, lwords> <- lowlevel) {
+		for (<hid, hwords> <- highlevel) {
+			if (<hid, lid> in manual) {
+				if (<hid, lid> in automatic) {
+					tp += 1;
+				}
+				else {
+					fn += 1;
+				}
+			}
+			else {
+				if (<hid, lid> in automatic) {
+					fp += 1;
+				}
+				else {
+					tn += 1;
+				}
+			}
+		}
+	}
+	ConfusionMatrix cm = <tp,fp,tn,fn>
+	return cm;
 }
