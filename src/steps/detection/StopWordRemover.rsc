@@ -16,11 +16,7 @@ Requirement removeStopWords(Requirement reqs) {
 		//	println(w);
 	 //   }
 	    
-		list[str] withoutSymbols = [];
-		for (w <- words) {
-			withoutSymbols += removeSymbols(w);
-		}
-		list[str] baseWords = remover2(withoutSymbols);
+		list[str] baseWords = remover2(words);
 		result += {<id, baseWords>};
 		
 		//println("<id>---------after---------");
@@ -45,10 +41,6 @@ list[str] remover(list[str] args) {
   }
   
   return args;
-}
-
-str removeSymbols(str word) {
-	return escape(word, ("." : "", "," : "", ":" : "", "!" : "", "?" : ""));
 }
 
 list[str] remover2(list[str] args) {

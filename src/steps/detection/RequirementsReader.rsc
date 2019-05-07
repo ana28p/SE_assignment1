@@ -69,7 +69,7 @@ private str applyLowlevelWordFiltering(str origWord) {
 	if (/[a-z]:/ := origWord) {
 		return "";
 	}
-	return origWord;
+	return escape(origWord, ("." : "", "," : "", ":" : "", "!" : "", "?" : "", "(" : "", ")" : "", "*" : ""));
 }
 
 private list[str] readRequirements(loc dir, str fileName) =
