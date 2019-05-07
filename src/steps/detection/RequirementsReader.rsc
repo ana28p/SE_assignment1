@@ -39,7 +39,7 @@ Requirement readLowlevelRequirements(DataSet grp) {
     list[str] reqWords = [];
     
     for (str line <- split("\n", trim(req))) {
-      reqWords += [applyLowlevelWordFiltering(toLowerCase(word)) | str fLine := applyLowlevelLineFiltering(line), /<word:\S+>/ := fLine];
+      	reqWords += [applyLowlevelWordFiltering(toLowerCase(word)) | str fLine := applyLowlevelLineFiltering(line), /<word:\S+>/ := fLine];
     }
     
     result += {<id, reqWords>}; 
@@ -63,6 +63,12 @@ private str applyLowlevelLineFiltering(str origLine) {
 private str applyLowlevelWordFiltering(str origWord) {
 	// TODO: This is the spot to implement some extra filtering if wanted while reading in the lowlevel requirements
 	// This function gets called for EVERY word in the lowlevel requirements text
+	if (/uc[0-9]+/ := origWord) {
+		return "";
+	}
+	if (/[a-z]:/ := origWord) {
+		return "";
+	}
 	return origWord;
 }
 
