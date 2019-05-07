@@ -9,7 +9,6 @@ import IO;
 import Set;
 
 alias Vector = rel[str name, list[real] freq];
-bool useEnglishFrequencyWeights = true;
 
 Vector calculateVector(Requirement reqs, list[str] vocabulary) {
 	Vector result = {};
