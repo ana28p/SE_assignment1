@@ -8,7 +8,7 @@ import steps::detection::VocabularyBuilder;
 import steps::detection::Vectorizer;
 import steps::detection::SimilarityCalculator;
 import steps::detection::TraceLinkConstructor;
-import steps::detection::EnglishWordFrequency;
+import steps::detection::ImportantWordsVeto;
 
 import IO;
 import ValueIO;
@@ -18,32 +18,41 @@ void gatherLinksGroup1() = gatherLinks(group1());
 void gatherLinksGroup9() = gatherLinks(group9());
 
 void gatherLinks(DataSet grp) {
-	println("(0) Reading and calculating english word weight");
-	WordFreq wordFreqs = readWordFrequency();
-	WordWeight wordWeight = calculateWordWeight(wordFreqs);
+	bool enableImportantWordsVeto = true;
+	int maxFrequencyImportantWord = 25000;
+	real maxRelativeDifferenceInImportantWords = 0.85;
 
-	println("(1/7) Reading highlevel requirements");
+	println("(1/9) Getting the least important words");
+	list[str] importantVocabulary = stemAll(getImportantWords(maxFrequencyImportantWord));
+
+	println("(2/9) Reading highlevel requirements");
 	Requirement highlevel = readHighlevelRequirements(grp);
-	println("(2/7) Reading lowlevel requirements");
+	println("(3/9) Reading lowlevel requirements");
 	Requirement lowlevel = readLowlevelRequirements(grp);
 	
-	println("(3/7) Removing stop words and apply stemming");
+	println("(4/9) Removing stop words and apply stemming");
 	highlevel = stemWords(removeStopWords(highlevel));
 	lowlevel = stemWords(removeStopWords(lowlevel));
 	
-	println("(4/7) Building master vocabulary");
+	println("(5/9) Determine the excluded links");
+	excludedLinks = {};
+	if (enableImportantWordsVeto) {
+		excludedLinks = getExcludedLinks(importantVocabulary, highlevel, lowlevel, maxRelativeDifferenceInImportantWords);
+	}
+	
+	println("(6/9) Building master vocabulary");
 	list[str] vocabulary = extractVocabulary(highlevel + lowlevel);
 	
-	println("(5/7) Calculating vectors");
-	Vector vectors = calculateVector(highlevel + lowlevel, vocabulary, wordWeight);
+	println("(7/9) Calculating vectors");
+	Vector vectors = calculateVector(highlevel + lowlevel, vocabulary);
 
-	println("(6/7) Calculating similarity matrix");
+	println("(8/9) Calculating similarity matrix");
 	SimilarityMatrix sm = calculateSimilarityMatrix(highlevel, lowlevel, vectors);
 	
-	println("(7/7) Gathering trace links for different methods");
-	AllTraceLinks allLinks = constructLinks(sm);
+	println("(9/9) Gathering trace links for different methods");
+	AllTraceLinks allLinks = constructLinks(sm, excludedLinks);
 
-  writeTextValueFile(grp.dir + "tracelinks.result", allLinks);  
+  	writeTextValueFile(grp.dir + "tracelinks.result", allLinks);  
 	
 	println("Done");
 	

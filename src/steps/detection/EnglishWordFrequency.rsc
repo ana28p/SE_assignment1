@@ -10,9 +10,6 @@ import List;
 import DataSet;
 
 alias WordFreq = map[str,int];
-alias WordWeight = map[str,real];
-real minWeight = 1.;
-real maxWeight = 5.;
 
 WordFreq readWordFrequency() {
 	list[str] words = split("\n",readFile(|project://SE_assignment1/data/English-Word-Frequency.txt|));
@@ -22,6 +19,10 @@ WordFreq readWordFrequency() {
 	}
 	
 	return stemFreqWords(removeStopWords(result));
+}
+
+int getMaxWordFreq(WordFreq orig) {
+	return (0 | max(it, orig[w]) | w <- orig);
 }
 
 set[str] readStopwords() =
@@ -52,29 +53,4 @@ WordFreq stemFreqWords(WordFreq orig) {
 		}
 	}
 	return result;
-}
-
-WordWeight calculateWordWeight(WordFreq orig) {
-	WordWeight result = ();
-	int minFreq = min(orig);
-	int maxFreq = max(orig);
-	// e^(ax+b)
-	//real a = (ln(minWeight) - ln(maxWeight)) / (maxFreq - minFreq);
-	//real b = ln(minWeight) - (a * maxFreq);
-	// 1/(ax+b)
-	real a = (1/maxWeight - 1/minWeight) / (minFreq - maxFreq);
-	real b = 1/minWeight - (a * maxFreq); 
-	for (w <- orig) {
-		//result += (w: exp(a * orig[w] + b));
-		result += (w: 1.0 / (a * orig[w] + b));
-	}
-	return result;
-}
-
-int min(WordFreq orig) {
-	return (1000000000 | min(it, orig[w]) | w <- orig);
-}
-
-int max(WordFreq orig) {
-	return (0 | max(it, orig[w]) | w <- orig);
 }
