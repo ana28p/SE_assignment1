@@ -38,8 +38,11 @@ Requirement readLowlevelRequirements(DataSet grp) {
   for (str req <- requirements, /^<id:UC[0-9]+>/ := trim(req)) {
     list[str] reqWords = [];
     
-    for (str line <- split("\n", trim(req))) {
-      reqWords += [applyLowlevelWordFiltering(toLowerCase(word)) | str fLine := applyLowlevelLineFiltering(line), /<word:\S+>/ := fLine];
+    for (str line <- split("\n", trim(req)), /^<id:UC[0-9]+>/ !:= trim(line)) {
+    	if (/^<word:[A-Za-z]+>:.*/ := trim(line)) {
+    		line = substring(line, findFirst(line, ":") + 1);
+    	}
+      	reqWords += [applyLowlevelWordFiltering(toLowerCase(word)) | str fLine := applyLowlevelLineFiltering(line), /<word:\S+>/ := fLine];
     }
     
     result += {<id, reqWords>}; 
