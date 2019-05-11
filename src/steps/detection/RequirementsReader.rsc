@@ -24,6 +24,8 @@ Requirement readHighlevelRequirements(DataSet grp) {
       reqWords += [applyLowlevelWordFiltering(toLowerCase(word)) | str fLine := applyLowlevelLineFiltering(line), /<word:\S+>/ := fLine];
     }
     
+    reqWords = [w | w <- reqWords, !isEmpty(w)];
+    
     result += {<id, reqWords>}; 
   }
 	
@@ -41,6 +43,8 @@ Requirement readLowlevelRequirements(DataSet grp) {
     for (str line <- split("\n", trim(req))) {
       	reqWords += [applyLowlevelWordFiltering(toLowerCase(word)) | str fLine := applyLowlevelLineFiltering(line), /<word:\S+>/ := fLine];
     }
+	
+	reqWords = [w | w <- reqWords, !isEmpty(w)];
     
     result += {<id, reqWords>}; 
   }
@@ -63,10 +67,17 @@ private str applyLowlevelLineFiltering(str origLine) {
 private str applyLowlevelWordFiltering(str origWord) {
 	// TODO: This is the spot to implement some extra filtering if wanted while reading in the lowlevel requirements
 	// This function gets called for EVERY word in the lowlevel requirements text
+	
+	// ignore the use case name identifier 
 	if (/uc[0-9]+/ := origWord) {
 		return "";
 	}
+	// ignore the use case columns
 	if (/[a-z]:/ := origWord) {
+		return "";
+	}
+	// ignore the words between "(* *)"; for example (*removed*)
+	if (/(\*[a-z]+\*)/ := origWord) {
 		return "";
 	}
 	return escape(origWord, ("." : "", "," : "", ":" : "", "!" : "", "?" : "", "(" : "", ")" : "", "*" : ""));
