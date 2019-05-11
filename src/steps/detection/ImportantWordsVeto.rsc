@@ -26,7 +26,8 @@ TraceLink getExcludedLinks(list[str] importantVocabulary, Requirement highlevel,
 		for (<Lid, Lwords> <- lowlevel) {
 			int difference = 0;
 			int total_occ = 0;
-			for (word <- importantVocabulary) {
+			list[str] unionWords = Hwords + Lwords;
+			for (word <- importantVocabulary & unionWords) {
 				if (!(word in Hwords <==> word in Lwords)) {
 					difference += 1;
 				} 
