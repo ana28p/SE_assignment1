@@ -16,8 +16,8 @@ SimilarityMatrix calculateSimilarityMatrix(Requirement highlevel, Requirement lo
 
 	SimilarityMatrix result = {};
 	
-	for (<Hid, Hwords> <- highlevel) {
-		for (<Lid, Lwords> <- lowlevel) {
+	for (<Hid, _> <- highlevel) {
+		for (<Lid, _> <- lowlevel) {
 			result += <Hid, Lid, cos(getOneFrom(vec[Hid]), getOneFrom(vec[Lid]))>;
 		}
 	}
@@ -34,6 +34,10 @@ real cos(list[real] high, list[real] low) {
 	
 	real x = sqrt((0. | it + h * h | real h <- high));
 	real y = sqrt((0. | it + l * l | real l <- low));
+	
+	if (x == 0 || y == 0) {
+		return 0.;
+	}
 	
 	return top / (x * y);
 }
