@@ -34,6 +34,7 @@ TraceLink getExcludedLinks(list[str] importantVocabulary, Requirement highlevel,
 					total_occ += 1;
 				}
 			}
+			
 			if (1.0 * difference >= total_occ * relativeMaxDifference) {
 				exclude += <Hid, Lid>;
 			}
